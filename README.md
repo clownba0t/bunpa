@@ -53,4 +53,4 @@ For a slightly more detailed example, see the `usage_example.rb` script in the `
 
 ## Notes
 
-This is very much a work in progress - use at your own risk.
+This is very much a work in progress - it only has minimal testing at the moment, so use at your own risk :)
