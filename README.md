@@ -2,6 +2,7 @@ Bunpa
 ==========================
 
 Bunpa is an extremely simple wrapper around the MeCab Japanese grammar parser. It was designed with two key features in mind:
+
 1. Simplicity - only returns the text and major part of speech for each component
 2. Completeness - ensure that whitespace and any unknown characters are preserved
 
@@ -22,11 +23,11 @@ From within your Rails application's base directory:
 
 1. Edit your Gemfile and add:
 
-        `gem 'bunpa'`
+        gem 'bunpa'
 
 2. Install the gem:
 
-        `bundle`
+        bundle
 
 ## Usage
 
