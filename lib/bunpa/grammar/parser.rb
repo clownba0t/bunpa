@@ -2,7 +2,13 @@ require 'MeCab'
 require_relative 'node'
 
 module Bunpa::Grammar
+  # An extremely simple wrapper around the MeCab gem. It takes a plain text
+  # output from mecab itself and splits it up to obtain the text and part of
+  # speech for each component.
   class Parser
+    # Parses the provided text using MeCab. Returns an array of
+    # Bunpa::Grammar::Node objects, which store the text and part of speech
+    # value of each.
     def parse(text)
       raw_nodes = parse_text_grammar(text)
       build_node_list(raw_nodes)

@@ -1,3 +1,6 @@
+require_relative 'text/component'
+require_relative 'grammar/parser'
+
 # Parses a string of Japanese text into a complete set of ordered components
 # representing the grammar and formatting of the string. If printed in order,
 # these components will complete reconstitute the original string.
@@ -7,11 +10,10 @@
 # the string must undergo a second analysis (after grammar parsing) to identify
 # any missed characters and create components for them in the appropriate
 # location within the component set.
-
-require_relative 'grammar/parser'
-require_relative 'text/component'
-
 class Bunpa::JapaneseTextParser
+  # Parses the provided text into a set of ordered grammatical and formatting
+  # components (Bunpa::Text::Component) and returns an enumerator for accessing
+  # these.
   def parse(text)
     grammar_nodes = parse_text_grammar(text)
     extract_manuscript_components(text, grammar_nodes)
