@@ -4,7 +4,7 @@ Bunpa
 Bunpa is an extremely simple wrapper around the MeCab Japanese grammar parser. It was designed with two key features in mind:
 
 1. Simplicity - only returns the text and major part of speech for each component
-2. Completeness - ensure that whitespace and any unknown characters are preserved
+2. Completeness - ensures that whitespace and any unknown characters are preserved
 
 ## Background
 
@@ -19,7 +19,7 @@ Any components that cannot be identified by either MeCab or Bunpa are marked as 
 
 ## Installation
 
-From within your Rails application's base directory:
+From within your application's base directory:
 
 1. Edit your Gemfile and add:
 
@@ -31,7 +31,7 @@ From within your Rails application's base directory:
 
 ## Usage
 
-Bunpa operates as a very simple parser. It returns the components it identifies in an Enumerator in the same order as they appear in the document.
+Bunpa operates as a very simple parser. It returns the components it identifies in an Enumerator of Bunpa::Text::Component objects, in the same order as they appear in the document. Each Component object has two accessors - 'text' and 'kind', which return the text value and part of speech of the component respectively.
 
 Basic usage is as follows:
 
@@ -42,12 +42,38 @@ require 'bunpa'
 parser = Bunpa::JapaneseTextParser.new
 
 # Get an enumerable of Bunpa::Text::Components
-components = parser.parse("こんにちは！お元気ですか。")
+components = parser.parse("A: こんにちは！ お元気ですか。\nB: はい、元気です！")
 
 components.each do |component|
   puts "#{component.text}\t(#{component.kind}"
 end
+```
 
+This would output:
+
+```
+A       (名詞)
+:       (名詞)
+        (スペース)
+こんにちは      (感動詞)
+！      (記号)
+        (スペース)
+お      (接頭詞)
+元気    (名詞)
+です    (助動詞)
+か      (助詞)
+。      (記号)
+
+        (改行)
+B       (名詞)
+:       (名詞)
+        (スペース)
+は      (助詞)
+い      (動詞)
+、      (記号)
+元気    (名詞)
+です    (助動詞)
+！      (記号)
 ```
 
 For a slightly more detailed example, see the `usage_example.rb` script in the `bin` directory.
