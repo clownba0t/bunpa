@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bunpa (0.1.0)
+    bunpa (0.2.0)
       mecab (~> 0.996)
 
 GEM

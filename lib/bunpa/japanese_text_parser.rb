@@ -15,56 +15,49 @@ class Bunpa::JapaneseTextParser
   # components (Bunpa::Text::Component) and returns an enumerator for accessing
   # these.
   def parse(text)
-    @text = text
-    text_to_components
+    grammar_nodes = parse_text_grammar(text)
+    text_to_components(text, grammar_nodes)
   end
 
   private
-    def grammar_nodes
-      @grammar_nodes ||= parse_text_grammar(@text)
-    end
-
     def parse_text_grammar(text)
       Bunpa::Grammar::Parser.new.parse(text)
     end
 
-    def remaining_text
-      @remaining_text ||= @text.dup
+    def text_to_components(text, grammar_nodes)
+      component_enumerator = text_to_component_enumerator(text, grammar_nodes)
+      component_enumerator.map { |component| component }
     end
 
-    def grammar_node_enumerator
-      @grammar_node_enumerator ||= grammar_nodes.to_enum
-    end
-
-    def current_grammar_node
-      grammar_node_enumerator.peek
-    end
-
-    def move_to_next_grammar_node
-      grammar_node_enumerator.next
-    end
-
-    def text_to_components
+    def text_to_component_enumerator(text, grammar_nodes)
+      remaining_text = text.dup
+      grammar_node_enumerator = grammar_nodes.to_enum
       Enumerator.new do |yielder|
         loop do
-          component = next_component_from_text
+          current_grammar_node = grammar_node_enumerator.peek
+          component = next_component_from_text(remaining_text, current_grammar_node)
           yielder.yield component
-          prepare_for_next_component(component)
+          remaining_text.gsub!(/\A#{Regexp.quote(component.text)}/, '')
+          if current_grammar_node.text == component.text
+            grammar_node_enumerator.next
+          end
         end
-        extract_remaining_unknown_components.each { |c| yielder.yield c }
+        extract_remaining_unknown_components(remaining_text).each do |component|
+          yielder.yield component
+        end
       end
     end
 
-    def next_component_from_text
-      grammar_node_regexp = Regexp.quote(current_grammar_node.text)
-      component_text = remaining_text.scan(/\A(?:#{grammar_node_regexp}|[\s\n]|[^\s\n]+?(?=#{grammar_node_regexp}))/).first
-      component_kind = determine_component_kind(component_text)
+    def next_component_from_text(text, grammar_node)
+      grammar_node_regexp = Regexp.quote(grammar_node.text)
+      component_text = text.scan(/\A(?:#{grammar_node_regexp}|[\s\n]|[^\s\n]+?(?=#{grammar_node_regexp}))/).first
+      component_kind = determine_component_kind(component_text, grammar_node)
       Bunpa::Text::Component.new(component_text, component_kind)
     end
 
-    def determine_component_kind(component_text)
-      if current_grammar_node.text == component_text
-        current_grammar_node.part_of_speech
+    def determine_component_kind(component_text, grammar_node)
+      if grammar_node.text == component_text
+        grammar_node.part_of_speech
       else
         determine_unknown_component_kind(component_text)
       end
@@ -83,15 +76,8 @@ class Bunpa::JapaneseTextParser
       end
     end
 
-    def prepare_for_next_component(component)
-      remaining_text.gsub!(/\A#{Regexp.quote(component.text)}/, '')
-      if current_grammar_node.text == component.text
-        move_to_next_grammar_node
-      end
-    end
-
-    def extract_remaining_unknown_components
-      remaining_text.scan(/[\s\n]|[^\s\s]+/).map do |component_text|
+    def extract_remaining_unknown_components(text)
+      text.scan(/[\s\n]|[^\s\s]+/).map do |component_text|
         component_kind = determine_unknown_component_kind(component_text)
         Bunpa::Text::Component.new(component_text, component_kind)
       end
