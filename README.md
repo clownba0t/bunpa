@@ -31,7 +31,7 @@ From within your application's base directory:
 
 ## Usage
 
-Bunpa operates as a very simple parser. It returns the components it identifies in an Enumerator of Bunpa::Text::Component objects, in the same order as they appear in the document. Each Component object has two accessors - 'text' and 'kind', which return the text value and part of speech of the component respectively.
+Bunpa operates as a very simple parser. It returns the components it identifies as an Array of Bunpa::Text::Component objects, in the same order as they appear in the document. Each Component object has two accessors - 'text' and 'kind', which return the text value and part of speech of the component respectively.
 
 Basic usage is as follows:
 

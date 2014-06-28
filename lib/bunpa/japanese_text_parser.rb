@@ -11,9 +11,8 @@ require_relative 'grammar/parser'
 # any missed characters and create components for them in the appropriate
 # location within the component set.
 class Bunpa::JapaneseTextParser
-  # Parses the provided text into a set of ordered grammatical and formatting
-  # components (Bunpa::Text::Component) and returns an enumerator for accessing
-  # these.
+  # Parses the provided text into an Array of ordered grammatical and formatting
+  # components (Bunpa::Text::Component).
   def parse(text)
     grammar_nodes = parse_text_grammar(text)
     text_to_components(text, grammar_nodes)
