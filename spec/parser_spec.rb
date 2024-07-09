@@ -4,8 +4,7 @@ describe Bunpa::JapaneseTextParser do
   describe "#parse" do
     before(:each) do
       @content = <<TEST
-ほんと、悲し過ぎるわよね。 でも、しかたないな。
-そうだよ！「Very sad」	だもん。
+近々PayPayに申し込む予定です。紹介ボーナスなどが欲しい場合は私に連絡してください。あなたがいなくて寂しいです。元気で過ごしているといいのですが
 TEST
       @parser = Bunpa::JapaneseTextParser.new
     end
